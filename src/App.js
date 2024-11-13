@@ -82,7 +82,6 @@ function App() {
               })}
             />
             <label style={{ display: 'block' }} htmlFor="detail">詳細</label>
-            {/* Edgeだとtextareaに入力ができない（ブラウザのキャッシュをクリアして解決） */}
             <textarea 
               style={{width: '25em'}} 
               id='detail' 
