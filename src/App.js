@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState} from 'react';
 import './App.css';
 
 function App() {
@@ -15,6 +15,11 @@ function App() {
     if(addTodo.title !== ''){
       setTodoList([...todoList,{...addTodo}])
     }
+    setAddTodo({
+      status:'未着手',
+      title: '',
+      detail: ''
+    })
   }
 
   //ステータス変更
@@ -33,10 +38,6 @@ function App() {
     )
   }
 
-  useEffect(() => {
-      console.log(todoList);
-  }, [todoList]);
-
   return (
     <div className="App">
       <header className="App-header">TODO</header>
@@ -45,7 +46,7 @@ function App() {
         <ul>
           {todoList.map((todo,index)=> {
             return(
-              <li>
+              <li key={index}>
                 <span>{index+1}</span>
                 <select 
                   value={todo.status}
@@ -56,8 +57,8 @@ function App() {
                   <option value='完了'>完了</option>
                 </select>
                 <div className='list-text'> 
-                  <p className='list-title'>{todo.title}</p>
-                  <p className='list-detail'>{todo.detail}</p>
+                  <p className='list-title' style={todo.status === '完了' ? {textDecoration: "line-through"}:{textDecoration:"none"}}>{todo.title}</p>
+                  <p className='list-detail' style={todo.status === '完了' ? {textDecoration: "line-through"}:{textDecoration:"none"}}>{todo.detail}</p>
                 </div>
                 <button className='btn-delete' onClick={() => deleteTodo(index)}>削除</button>
               </li>
@@ -72,6 +73,8 @@ function App() {
             <input 
               type="text" 
               id='title' 
+              value={addTodo.title}
+              autoComplete="off"
               style={{width: '25em'}}
               onChange={(event)=>setAddTodo({
                 ...addTodo,
@@ -79,14 +82,18 @@ function App() {
               })}
             />
             <label style={{ display: 'block' }} htmlFor="detail">詳細</label>
+            {/* Edgeだとtextareaに入力ができない（ブラウザのキャッシュをクリアして解決） */}
             <textarea 
               style={{width: '25em'}} 
-              type="text" 
               id='detail' 
-              onChange={(event)=>setAddTodo({
+              value={addTodo.detail}
+              key={`textarea-${Date.now()}`}
+              autoComplete="off"
+              onChange={(event)=> {
+                setAddTodo({
                 ...addTodo,
                 detail:event.target.value
-              })}
+              })}}
             />
           </div>
           <button 
